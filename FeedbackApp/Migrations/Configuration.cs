@@ -1,4 +1,6 @@
-﻿namespace FeedbackApp.Migrations
+﻿using FeedbackApp.Models;
+
+namespace FeedbackApp.Migrations
 {
     using System;
     using System.Data.Entity;
@@ -19,5 +21,7 @@
             //  You can use the DbSet<T>.AddOrUpdate() helper extension method
             //  to avoid creating duplicate seed data.
         }
+        public DbSet<Department> Departments { get; set; }
+
     }
 }
