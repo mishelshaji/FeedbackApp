@@ -33,5 +33,9 @@ namespace FeedbackApp.Models
 
         public DbSet<Department> Departments { get; set; }
 
+        public DbSet<Subject> Subjects { get; set; }
+
+        public DbSet<Feedback> Feedbacks { get; set; }
+
     }
 }
