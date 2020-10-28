@@ -16,6 +16,7 @@ using Microsoft.Owin.Security.OAuth;
 using FeedbackApp.Models;
 using FeedbackApp.Providers;
 using FeedbackApp.Results;
+using FeedbackApp.Shared;
 
 namespace FeedbackApp.Controllers
 {
@@ -329,8 +330,18 @@ namespace FeedbackApp.Controllers
             }
 
             var user = new ApplicationUser() { UserName = model.Email, Email = model.Email };
-
             IdentityResult result = await UserManager.CreateAsync(user, model.Password);
+
+            // Register role
+            var roleStore = new RoleStore<IdentityRole>(new ApplicationDbContext());
+            var roleManager = new RoleManager<IdentityRole>(roleStore);
+
+            await roleManager.CreateAsync(new IdentityRole() { Name = UserRoles.IsAdmin });
+
+            var userStore = new UserStore<ApplicationUser>(new ApplicationDbContext());
+            var userManager = new UserManager<ApplicationUser>(userStore);
+
+            await userManager.AddToRoleAsync(user.Id, UserRoles.IsAdmin);
 
             if (!result.Succeeded)
             {
