@@ -6,68 +6,58 @@ using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Threading.Tasks;
 using System.Web.Http;
-using System.Web.Http.ModelBinding;
-using System.Web.Http.OData;
-using System.Web.Http.OData.Routing;
+using System.Web.Http.Description;
 using FeedbackApp.Models;
 
 namespace FeedbackApp.Controllers
 {
-    /*
-    The WebApiConfig class may require additional changes to add a route for this controller. Merge these statements into the Register method of the WebApiConfig class as applicable. Note that OData URLs are case sensitive.
-
-    using System.Web.Http.OData.Builder;
-    using System.Web.Http.OData.Extensions;
-    using FeedbackApp.Models;
-    ODataConventionModelBuilder builder = new ODataConventionModelBuilder();
-    builder.EntitySet<Feedback>("Feedback");
-    config.Routes.MapODataServiceRoute("odata", "odata", builder.GetEdmModel());
-    */
-    public class FeedbackController : ODataController
+    public class FeedbackController : ApiController
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
-        // GET: odata/Feedback
-        [EnableQuery]
-        public IQueryable<Feedback> GetFeedback()
+        // GET: api/Feedback
+        public IQueryable<Feedback> GetFeedbacks()
         {
             return db.Feedbacks;
         }
 
-        // GET: odata/Feedback(5)
-        [EnableQuery]
-        public SingleResult<Feedback> GetFeedback([FromODataUri] int key)
+        // GET: api/Feedback/5
+        [ResponseType(typeof(Feedback))]
+        public IHttpActionResult GetFeedback(int id)
         {
-            return SingleResult.Create(db.Feedbacks.Where(feedback => feedback.Id == key));
-        }
-
-        // PUT: odata/Feedback(5)
-        public async Task<IHttpActionResult> Put([FromODataUri] int key, Delta<Feedback> patch)
-        {
-            Validate(patch.GetEntity());
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            Feedback feedback = await db.Feedbacks.FindAsync(key);
+            Feedback feedback = db.Feedbacks.Find(id);
             if (feedback == null)
             {
                 return NotFound();
             }
 
-            patch.Put(feedback);
+            return Ok(feedback);
+        }
+
+        // PUT: api/Feedback/5
+        [ResponseType(typeof(void))]
+        public IHttpActionResult PutFeedback(int id, Feedback feedback)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (id != feedback.Id)
+            {
+                return BadRequest();
+            }
+
+            db.Entry(feedback).State = EntityState.Modified;
 
             try
             {
-                await db.SaveChangesAsync();
+                db.SaveChanges();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!FeedbackExists(key))
+                if (!FeedbackExists(id))
                 {
                     return NotFound();
                 }
@@ -77,11 +67,12 @@ namespace FeedbackApp.Controllers
                 }
             }
 
-            return Updated(feedback);
+            return StatusCode(HttpStatusCode.NoContent);
         }
 
-        // POST: odata/Feedback
-        public async Task<IHttpActionResult> Post(Feedback feedback)
+        // POST: api/Feedback
+        [ResponseType(typeof(Feedback))]
+        public IHttpActionResult PostFeedback(Feedback feedback)
         {
             if (!ModelState.IsValid)
             {
@@ -89,62 +80,25 @@ namespace FeedbackApp.Controllers
             }
 
             db.Feedbacks.Add(feedback);
-            await db.SaveChangesAsync();
+            db.SaveChanges();
 
-            return Created(feedback);
+            return CreatedAtRoute("DefaultApi", new { id = feedback.Id }, feedback);
         }
 
-        // PATCH: odata/Feedback(5)
-        [AcceptVerbs("PATCH", "MERGE")]
-        public async Task<IHttpActionResult> Patch([FromODataUri] int key, Delta<Feedback> patch)
+        // DELETE: api/Feedback/5
+        [ResponseType(typeof(Feedback))]
+        public IHttpActionResult DeleteFeedback(int id)
         {
-            Validate(patch.GetEntity());
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            Feedback feedback = await db.Feedbacks.FindAsync(key);
-            if (feedback == null)
-            {
-                return NotFound();
-            }
-
-            patch.Patch(feedback);
-
-            try
-            {
-                await db.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!FeedbackExists(key))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return Updated(feedback);
-        }
-
-        // DELETE: odata/Feedback(5)
-        public async Task<IHttpActionResult> Delete([FromODataUri] int key)
-        {
-            Feedback feedback = await db.Feedbacks.FindAsync(key);
+            Feedback feedback = db.Feedbacks.Find(id);
             if (feedback == null)
             {
                 return NotFound();
             }
 
             db.Feedbacks.Remove(feedback);
-            await db.SaveChangesAsync();
+            db.SaveChanges();
 
-            return StatusCode(HttpStatusCode.NoContent);
+            return Ok(feedback);
         }
 
         protected override void Dispose(bool disposing)
@@ -156,9 +110,9 @@ namespace FeedbackApp.Controllers
             base.Dispose(disposing);
         }
 
-        private bool FeedbackExists(int key)
+        private bool FeedbackExists(int id)
         {
-            return db.Feedbacks.Count(e => e.Id == key) > 0;
+            return db.Feedbacks.Count(e => e.Id == id) > 0;
         }
     }
 }
