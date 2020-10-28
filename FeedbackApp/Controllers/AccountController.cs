@@ -351,6 +351,37 @@ namespace FeedbackApp.Controllers
             return Ok();
         }
 
+        [AllowAnonymous]
+        [Route("RegisterStaff")]
+        public async Task<IHttpActionResult> RegisterStaff(RegisterStaffBindingModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var user = new ApplicationUser() { UserName = model.Email, Email = model.Email };
+            IdentityResult result = await UserManager.CreateAsync(user, model.Password);
+
+            // Register role
+            var roleStore = new RoleStore<IdentityRole>(new ApplicationDbContext());
+            var roleManager = new RoleManager<IdentityRole>(roleStore);
+
+            await roleManager.CreateAsync(new IdentityRole() { Name = UserRoles.IsAdmin });
+
+            var userStore = new UserStore<ApplicationUser>(new ApplicationDbContext());
+            var userManager = new UserManager<ApplicationUser>(userStore);
+
+            await userManager.AddToRoleAsync(user.Id, UserRoles.IsAdmin);
+
+            if (!result.Succeeded)
+            {
+                return GetErrorResult(result);
+            }
+
+            return Ok();
+        }
+
         // POST api/Account/RegisterExternal
         [OverrideAuthentication]
         [HostAuthentication(DefaultAuthenticationTypes.ExternalBearer)]
