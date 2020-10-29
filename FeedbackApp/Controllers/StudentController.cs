@@ -7,57 +7,53 @@ using System.Web;
 using System.Web.Http;
 using FeedbackApp.Models;
 using FeedbackApp.Models.ViewModels;
+using FeedbackApp.Shared;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 
 namespace FeedbackApp.Controllers
 {
-    public class UserController : ApiController
+    public class StudentController : ApiController
     {
         ApplicationDbContext _db = new ApplicationDbContext();
         // GET: api/Student
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
-
-        // GET: api/Student/5
-        //[Route("GetUserById")]
-        public StudentAndStaff Get(string id)
+        public IEnumerable<StudentAndStaff> Get()
         {
             var userManager = HttpContext.Current.GetOwinContext()
                 .GetUserManager<ApplicationUserManager>();
-            var roleManage = HttpContext.Current.GetOwinContext()
-                .GetUserManager<ApplicationUserManager>();
-            var user = userManager.FindById(id);
-            
-            if (user != null)
-            {
-                var role = userManager.GetRoles(id);
 
-                var ss = new StudentAndStaff()
+            var students = _db.Users.Where(m => m.Semester > 0).ToList();
+            var studentList = new List<StudentAndStaff>();
+
+            foreach (var s in students)
+            {
+                var student = new StudentAndStaff()
                 {
-                    Id = user.Id,
-                    Name = user.Name,
-                    Semester = user.Semester,
-                    Role = role[0]
+                    Id = s.Id,
+                    Name = s.Name,
+                    Role = "Staff",
+                    Semester = s.Semester
                 };
-                return ss;
+                studentList.Add(student);
             }
 
-            return null;
+            return studentList;
+        }
+
+        // GET: api/Student/5
+        public string Get(int id)
+        {
+            return "value";
         }
 
         // POST: api/Student
         public void Post([FromBody]string value)
         {
-
         }
 
         // PUT: api/Student/5
         public void Put(int id, [FromBody]string value)
         {
-
         }
 
         // DELETE: api/Student/5
