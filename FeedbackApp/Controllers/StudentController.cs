@@ -31,7 +31,7 @@ namespace FeedbackApp.Controllers
                 {
                     Id = s.Id,
                     Name = s.Name,
-                    Role = "Staff",
+                    Role = "Student",
                     Semester = s.Semester
                 };
                 studentList.Add(student);
@@ -41,24 +41,30 @@ namespace FeedbackApp.Controllers
         }
 
         // GET: api/Student/5
-        public string Get(int id)
+        public StudentAndStaff Get(string id)
         {
-            return "value";
-        }
+            var userManager = HttpContext.Current.GetOwinContext()
+                .GetUserManager<ApplicationUserManager>();
+            var user = userManager.FindById(id);
 
-        // POST: api/Student
-        public void Post([FromBody]string value)
-        {
-        }
+            if (user != null)
+            {
+                var role = userManager.GetRoles(id).First();
+                if (role != UserRoles.IsStudent)
+                {
+                    return null;
+                }
+                var ss = new StudentAndStaff()
+                {
+                    Id = user.Id,
+                    Name = user.Name,
+                    Semester = user.Semester,
+                    Role = role
+                };
+                return ss;
+            }
 
-        // PUT: api/Student/5
-        public void Put(int id, [FromBody]string value)
-        {
-        }
-
-        // DELETE: api/Student/5
-        public void Delete(int id)
-        {
+            return null;
         }
     }
 }
