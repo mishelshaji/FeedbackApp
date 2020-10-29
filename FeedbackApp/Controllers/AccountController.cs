@@ -329,7 +329,7 @@ namespace FeedbackApp.Controllers
                 return BadRequest(ModelState);
             }
 
-            var user = new ApplicationUser() { UserName = model.Email, Email = model.Email };
+            var user = new ApplicationUser() { UserName = model.Email, Email = model.Email, Name = model.UserName, Semester = 0};
             IdentityResult result = await UserManager.CreateAsync(user, model.Password);
 
             // Register role
@@ -353,26 +353,57 @@ namespace FeedbackApp.Controllers
 
         [AllowAnonymous]
         [Route("RegisterStaff")]
-        public async Task<IHttpActionResult> RegisterStaff(RegisterStaffBindingModel model)
+        public async Task<IHttpActionResult> RegisterStaff(RegisterBindingModel model)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var user = new ApplicationUser() { UserName = model.Email, Email = model.Email };
+            var user = new ApplicationUser() { UserName = model.Email, Email = model.Email, Name = model.UserName, Semester = 0};
             IdentityResult result = await UserManager.CreateAsync(user, model.Password);
 
             // Register role
             var roleStore = new RoleStore<IdentityRole>(new ApplicationDbContext());
             var roleManager = new RoleManager<IdentityRole>(roleStore);
 
-            await roleManager.CreateAsync(new IdentityRole() { Name = UserRoles.IsAdmin });
+            await roleManager.CreateAsync(new IdentityRole() { Name = UserRoles.IsStaff });
 
             var userStore = new UserStore<ApplicationUser>(new ApplicationDbContext());
             var userManager = new UserManager<ApplicationUser>(userStore);
 
-            await userManager.AddToRoleAsync(user.Id, UserRoles.IsAdmin);
+            await userManager.AddToRoleAsync(user.Id, UserRoles.IsStaff);
+
+            if (!result.Succeeded)
+            {
+                return GetErrorResult(result);
+            }
+
+            return Ok();
+        }
+
+        [AllowAnonymous]
+        [Route("RegisterStudent")]
+        public async Task<IHttpActionResult> RegisterStudent(RegisterBindingModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var user = new ApplicationUser() { UserName = model.Email, Email = model.Email, Name = model.UserName, Semester = model.Semester};
+            IdentityResult result = await UserManager.CreateAsync(user, model.Password);
+
+            // Register role
+            var roleStore = new RoleStore<IdentityRole>(new ApplicationDbContext());
+            var roleManager = new RoleManager<IdentityRole>(roleStore);
+
+            await roleManager.CreateAsync(new IdentityRole() { Name = UserRoles.IsStudent });
+
+            var userStore = new UserStore<ApplicationUser>(new ApplicationDbContext());
+            var userManager = new UserManager<ApplicationUser>(userStore);
+
+            await userManager.AddToRoleAsync(user.Id, UserRoles.IsStudent);
 
             if (!result.Succeeded)
             {
