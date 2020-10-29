@@ -231,6 +231,7 @@
     <Compile Include="Controllers\FacultyController.cs" />
     <Compile Include="Controllers\FeedbackController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\SemesterController.cs" />
     <Compile Include="Controllers\StaffController.cs" />
     <Compile Include="Controllers\StudentController.cs" />
     <Compile Include="Controllers\SubjectController.cs" />
@@ -263,13 +264,16 @@
     <Compile Include="Migrations\202010290510096_AddedSemesterToIdentityModel.designer.cs">
       <DependentUpon>202010290510096_AddedSemesterToIdentityModel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202010291535004_AddedDepartmentToIdentityModel.cs" />
+    <Compile Include="Migrations\202010291535004_AddedDepartmentToIdentityModel.designer.cs">
+      <DependentUpon>202010291535004_AddedDepartmentToIdentityModel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Department.cs" />
     <Compile Include="Models\Feedback.cs" />
     <Compile Include="Models\IdentityModels.cs" />
-    <Compile Include="Models\Semester.cs" />
     <Compile Include="Models\Subject.cs" />
     <Compile Include="Models\ViewModels\Login.cs" />
     <Compile Include="Models\ViewModels\StudentAndStaff.cs" />
@@ -386,6 +390,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202010290510096_AddedSemesterToIdentityModel.resx">
       <DependentUpon>202010290510096_AddedSemesterToIdentityModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202010291535004_AddedDepartmentToIdentityModel.resx">
+      <DependentUpon>202010291535004_AddedDepartmentToIdentityModel.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

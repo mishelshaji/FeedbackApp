@@ -11,5 +11,6 @@ namespace FeedbackApp.Models.ViewModels
         public string Name { get; set; }
         public int Semester { get; set; }
         public string Role { get; set; }
+        public int DepartmentId { get; set; }
     }
 }

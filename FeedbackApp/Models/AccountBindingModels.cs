@@ -41,6 +41,8 @@ namespace FeedbackApp.Models
 
         public string UserName { get; set; }
 
+        public int DepartmentId { get; set; }
+
         public int Semester { get; set; }
 
         [Required]

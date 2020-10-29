@@ -60,7 +60,8 @@ namespace FeedbackApp.Controllers
                     Id = user.Id,
                     Name = user.Name,
                     Semester = user.Semester,
-                    Role = role[0]
+                    Role = role[0],
+                    DepartmentId = user.DepartmentId,
                 };
                 return ss;
             }
