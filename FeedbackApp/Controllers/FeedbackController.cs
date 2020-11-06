@@ -74,6 +74,21 @@ namespace FeedbackApp.Controllers
         [ResponseType(typeof(Feedback))]
         public IHttpActionResult PostFeedback(Feedback feedback)
         {
+            //if (ModelState[nameof(Feedback.PostedOn)].Errors.Any())
+            //{
+            //    ModelState[nameof(Feedback.PostedOn)].Errors.Clear();
+            //}
+            feedback.PostedOn = DateTime.Now;
+
+            var feedbacks = db.Feedbacks.Count(
+                m => m.StudentId == feedback.StudentId && 
+                     m.SubjectId == feedback.SubjectId);
+
+            if (feedbacks > 0)
+            {
+                return Content(HttpStatusCode.Conflict, "Please try after some time");
+            }
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);

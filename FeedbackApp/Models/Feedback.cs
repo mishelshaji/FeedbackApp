@@ -18,6 +18,12 @@ namespace FeedbackApp.Models
 
         [MinLength(10)]
         public string TeacherId { get; set; }
+
+        public int SubjectId { get; set; }
+
+        [DataType(DataType.Date)]
+        public DateTime PostedOn { get; set; }
+
         public int Option1 { get; set; }
         public int Option2 { get; set; }
         public int Option3 { get; set; }
