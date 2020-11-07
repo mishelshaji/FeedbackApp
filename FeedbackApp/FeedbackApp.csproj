@@ -234,6 +234,7 @@
     <Compile Include="Controllers\SemesterController.cs" />
     <Compile Include="Controllers\StaffController.cs" />
     <Compile Include="Controllers\StudentController.cs" />
+    <Compile Include="Controllers\DepartmentSubjectController.cs" />
     <Compile Include="Controllers\SubjectController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
