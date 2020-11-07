@@ -59,8 +59,19 @@ namespace FeedbackApp.Controllers
         }
 
         // DELETE: api/User/5
-        public void Delete(int id)
+        public IHttpActionResult Delete(string id)
         {
+            try
+            {
+                var user = _db.Users.FirstOrDefault(m => m.Id == id);
+                _db.Users.Remove(user);
+                _db.SaveChanges();
+                return Content(HttpStatusCode.OK, "Deleted");
+            }
+            catch (Exception e)
+            {
+                return Content(HttpStatusCode.NotFound, "Deletion Failed");
+            }
         }
     }
 }
