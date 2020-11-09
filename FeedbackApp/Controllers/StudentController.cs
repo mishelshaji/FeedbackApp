@@ -17,22 +17,23 @@ namespace FeedbackApp.Controllers
     {
         ApplicationDbContext _db = new ApplicationDbContext();
         // GET: api/Student
-        public IEnumerable<StudentAndStaff> Get()
+        public IEnumerable<UpdateProfile> Get()
         {
             var userManager = HttpContext.Current.GetOwinContext()
                 .GetUserManager<ApplicationUserManager>();
 
             var students = _db.Users.Where(m => m.Semester > 0).ToList();
-            var studentList = new List<StudentAndStaff>();
+            var studentList = new List<UpdateProfile>();
 
             foreach (var s in students)
             {
-                var student = new StudentAndStaff()
+                var student = new UpdateProfile()
                 {
                     Id = s.Id,
                     Name = s.Name,
                     Role = "Student",
-                    Semester = s.Semester
+                    Semester = s.Semester,
+                    Email = s.Email
                 };
                 studentList.Add(student);
             }
@@ -41,7 +42,7 @@ namespace FeedbackApp.Controllers
         }
 
         // GET: api/Student/5
-        public StudentAndStaff Get(string id)
+        public UpdateProfile Get(string id)
         {
             var userManager = HttpContext.Current.GetOwinContext()
                 .GetUserManager<ApplicationUserManager>();
@@ -54,13 +55,14 @@ namespace FeedbackApp.Controllers
                 {
                     return null;
                 }
-                var ss = new StudentAndStaff()
+                var ss = new UpdateProfile()
                 {
                     Id = user.Id,
                     Name = user.Name,
                     Semester = user.Semester,
                     Role = role,
-                    DepartmentId = user.DepartmentId
+                    DepartmentId = user.DepartmentId,
+                    Email = user.Email
                 };
                 return ss;
             }
