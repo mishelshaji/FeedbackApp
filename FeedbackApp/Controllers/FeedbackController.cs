@@ -79,14 +79,18 @@ namespace FeedbackApp.Controllers
             //    ModelState[nameof(Feedback.PostedOn)].Errors.Clear();
             //}
             feedback.PostedOn = DateTime.Now;
-
-            var feedbacks = db.Feedbacks.Count(
+            var date = feedback.PostedOn.ToString("yy-MM-dd");
+            var feedbacks = db.Feedbacks.Where(
                 m => m.StudentId == feedback.StudentId && 
-                     m.SubjectId == feedback.SubjectId);
+                     m.SubjectId == feedback.SubjectId).ToList();
 
-            if (feedbacks > 0)
+            foreach (var i in feedbacks)
             {
-                return Content(HttpStatusCode.Conflict, "Please try after some time");
+                var fdate = i.PostedOn.ToString("yy-MM-dd");
+                if (fdate.Equals(date))
+                {
+                    return Content(HttpStatusCode.Conflict, "Please try after some time");
+                }
             }
 
             if (!ModelState.IsValid)
