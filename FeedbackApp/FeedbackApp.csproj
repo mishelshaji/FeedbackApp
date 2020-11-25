@@ -280,6 +280,7 @@
     <Compile Include="Models\Feedback.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\Subject.cs" />
+    <Compile Include="Models\ViewModels\FeedbackView.cs" />
     <Compile Include="Models\ViewModels\Login.cs" />
     <Compile Include="Models\ViewModels\StudentAndStaff.cs" />
     <Compile Include="Models\ViewModels\UpdateProfile.cs" />
