@@ -16,6 +16,8 @@ namespace FeedbackApp.Models
 
         public int DepartmentId { get; set; }
 
+        public int Batch { get; set; }
+
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager, string authenticationType)
         {
             // Note the authenticationType must match the one defined in CookieAuthenticationOptions.AuthenticationType
@@ -42,6 +44,8 @@ namespace FeedbackApp.Models
         public DbSet<Subject> Subjects { get; set; }
 
         public DbSet<Feedback> Feedbacks { get; set; }
+
+        public DbSet<Batch> Batches { get; set; }
 
     }
 }

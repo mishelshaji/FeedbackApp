@@ -17,23 +17,24 @@ namespace FeedbackApp.Controllers
     {
         ApplicationDbContext _db = new ApplicationDbContext();
         // GET: api/Student
-        public IEnumerable<UpdateProfile> Get()
+        public IEnumerable<StudentViewModel> Get()
         {
             var userManager = HttpContext.Current.GetOwinContext()
                 .GetUserManager<ApplicationUserManager>();
 
             var students = _db.Users.Where(m => m.Semester > 0).ToList();
-            var studentList = new List<UpdateProfile>();
+            var studentList = new List<StudentViewModel>();
 
             foreach (var s in students)
             {
-                var student = new UpdateProfile()
+                var student = new StudentViewModel()
                 {
                     Id = s.Id,
                     Name = s.Name,
                     Role = "Student",
                     Semester = s.Semester,
-                    Email = s.Email
+                    Email = s.Email,
+                    Batch = s.Batch
                 };
                 studentList.Add(student);
             }
@@ -42,7 +43,7 @@ namespace FeedbackApp.Controllers
         }
 
         // GET: api/Student/5
-        public UpdateProfile Get(string id)
+        public StudentViewModel Get(string id)
         {
             var userManager = HttpContext.Current.GetOwinContext()
                 .GetUserManager<ApplicationUserManager>();
@@ -55,14 +56,15 @@ namespace FeedbackApp.Controllers
                 {
                     return null;
                 }
-                var ss = new UpdateProfile()
+                var ss = new StudentViewModel()
                 {
                     Id = user.Id,
                     Name = user.Name,
                     Semester = user.Semester,
                     Role = role,
                     DepartmentId = user.DepartmentId,
-                    Email = user.Email
+                    Email = user.Email,
+                    Batch = user.Batch,
                 };
                 return ss;
             }

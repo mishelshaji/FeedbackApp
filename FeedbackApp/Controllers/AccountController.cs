@@ -344,7 +344,7 @@ namespace FeedbackApp.Controllers
             }
 
             var department = await _db.Departments.FirstAsync(m => m.DepartmentName == "Management");
-            var user = new ApplicationUser() { UserName = model.Email, Email = model.Email, Name = model.UserName, Semester = 0, DepartmentId = department.Id};
+            var user = new ApplicationUser() { UserName = model.Email, Email = model.Email, Name = model.UserName, Semester = 0, DepartmentId = department.Id, Batch=0};
             IdentityResult result = await UserManager.CreateAsync(user, model.Password);
 
             // Register role
@@ -376,7 +376,7 @@ namespace FeedbackApp.Controllers
             }
 
             var department = await _db.Departments.FirstAsync(m => m.DepartmentName == "Management");
-            var user = new ApplicationUser() { UserName = model.Email, Email = model.Email, Name = model.UserName, Semester = 0, DepartmentId = department.Id};
+            var user = new ApplicationUser() { UserName = model.Email, Email = model.Email, Name = model.UserName, Semester = 0, DepartmentId = department.Id, Batch=0};
             IdentityResult result = await UserManager.CreateAsync(user, model.Password);
 
             // Register role
@@ -388,7 +388,9 @@ namespace FeedbackApp.Controllers
             var userStore = new UserStore<ApplicationUser>(new ApplicationDbContext());
             var userManager = new UserManager<ApplicationUser>(userStore);
 
-            await userManager.AddToRoleAsync(user.Id, UserRoles.IsStaff);
+            var newUser = userManager.FindByEmail(model.Email);
+
+            await userManager.AddToRoleAsync(newUser.Id, UserRoles.IsStaff);
 
             if (!result.Succeeded)
             {
@@ -407,7 +409,7 @@ namespace FeedbackApp.Controllers
                 return BadRequest(ModelState);
             }
 
-            var user = new ApplicationUser() { UserName = model.Email, Email = model.Email, Name = model.UserName, Semester = model.Semester, DepartmentId = model.DepartmentId};
+            var user = new ApplicationUser() { UserName = model.Email, Email = model.Email, Name = model.UserName, Semester = model.Semester, DepartmentId = model.DepartmentId, Batch=model.Batch};
             IdentityResult result = await UserManager.CreateAsync(user, model.Password);
 
             // Register role
@@ -419,7 +421,9 @@ namespace FeedbackApp.Controllers
             var userStore = new UserStore<ApplicationUser>(new ApplicationDbContext());
             var userManager = new UserManager<ApplicationUser>(userStore);
 
-            await userManager.AddToRoleAsync(user.Id, UserRoles.IsStudent);
+            var newUser = userManager.FindByEmail(model.Email);
+
+            await userManager.AddToRoleAsync(newUser.Id, UserRoles.IsStudent);
 
             if (!result.Succeeded)
             {

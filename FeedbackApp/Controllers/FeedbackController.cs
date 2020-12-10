@@ -93,6 +93,14 @@ namespace FeedbackApp.Controllers
                 }
             }
 
+            var feedbacksCount = db.Feedbacks.Count(m => m.StudentId == feedback.StudentId
+            && m.SubjectId == feedback.SubjectId);
+
+            if (feedbacksCount.Equals(date))
+            {
+                return Content(HttpStatusCode.Conflict, "You posted a feedback in this semester");
+            }
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
